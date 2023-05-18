@@ -23,43 +23,86 @@ const handleSavedNews = (savedItem) => {
   saveNews(savedItem);
 };
 
-const getNews = (category = "science") => {
+// const getNews = (category = "science") => {
+//   newsContainer.innerHTML = "";
+//   fetch(`https://inshorts.deta.dev/news?category=${category}`)
+//     .then((response) => response.json())
+//     .then((data) => {
+//       console.log("Data", data);
+//       data.data.forEach((newsItem) => {
+//         const div = document.createElement("div");
+//         div.classList.add("newsItem");
+//         div.innerHTML = `
+//           <h2>${newsItem.title}</h2>
+//           <div id="box">
+//           <img src="${newsItem.imageUrl}" class="img"></img>
+//           <div id="innerbox">
+//           <p id="nscontent">${newsItem.content} <a href="${newsItem.readMoreUrl}" style="text-decoration:none">READ MORE</a></p>
+//           <div class="forflex">
+//           <p>Date:- ${newsItem.date}</p>
+//           <p>Time:- ${newsItem.time}</p>
+//           </div>  
+//           <div class=by>
+//           <p>By - <strong>${newsItem.author}</strong></p>
+//           </div>
+//           </div>
+//           </div>
+//         `;
+//         const button = document.createElement("button");
+//         button.classList.add("btton");
+//         button.innerHTML = "SAVE";
+//         button.onclick = function () {
+//           handleSavedNews(newsItem);
+//         };
+
+//         div.appendChild(button);
+//         newsContainer.appendChild(div);
+//       });
+//     });
+// };
+
+const getNews = async (category = "science") => {
   newsContainer.innerHTML = "";
-  fetch(`https://inshorts.deta.dev/news?category=${category}`)
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("Data", data);
-      data.data.forEach((newsItem) => {
-        const div = document.createElement("div");
-        div.classList.add("newsItem");
-        div.innerHTML = `
-          <h2>${newsItem.title}</h2>
-          <div id="box">
+
+  try {
+    const response = await fetch(`https://inshorts.deta.dev/news?category=${category}`);
+    const data = await response.json();
+
+    console.log("Data", data);
+    data.data.forEach((newsItem) => {
+      const div = document.createElement("div");
+      div.classList.add("newsItem");
+      div.innerHTML = `
+        <h2>${newsItem.title}</h2>
+        <div id="box">
           <img src="${newsItem.imageUrl}" class="img"></img>
           <div id="innerbox">
-          <p id="nscontent">${newsItem.content} <a href="${newsItem.readMoreUrl}" style="text-decoration:none">READ MORE</a></p>
-          <div class="forflex">
-          <p>Date:- ${newsItem.date}</p>
-          <p>Time:- ${newsItem.time}</p>
-          </div>  
-          <div class=by>
-          <p>By - <strong>${newsItem.author}</strong></p>
+            <p id="nscontent">${newsItem.content} <a href="${newsItem.readMoreUrl}" style="text-decoration:none">READ MORE</a></p>
+            <div class="forflex">
+              <p>Date:- ${newsItem.date}</p>
+              <p>Time:- ${newsItem.time}</p>
+            </div>  
+            <div class=by>
+              <p>By - <strong>${newsItem.author}</strong></p>
+            </div>
           </div>
-          </div>
-          </div>
-        `;
-        const button = document.createElement("button");
-        button.classList.add("btton");
-        button.innerHTML = "SAVE";
-        button.onclick = function () {
-          handleSavedNews(newsItem);
-        };
+        </div>
+      `;
 
-        div.appendChild(button);
-        newsContainer.appendChild(div);
-      });
+      const button = document.createElement("button");
+      button.classList.add("btton");
+      button.innerHTML = "SAVE";
+      button.onclick = function () {
+        handleSavedNews(newsItem);
+      };
+
+      div.appendChild(button);
+      newsContainer.appendChild(div);
     });
-};
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}; 
 
 const saveNews = (id) => {
   const newss = Array.from(document.querySelectorAll(".newsItem")).map(
